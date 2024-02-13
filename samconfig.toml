@@ -1,0 +1,9 @@
+version = 0.1
+[development.deploy.parameters]
+stack_name = "notification-stack"
+resolve_s3 = true
+s3_prefix = "notification-stack"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

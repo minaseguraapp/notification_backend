@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  notification-backend
+  Cloud template for notification domain
+
+Globals:
+  Function:
+    Timeout: 60
+
+Parameters:
+  Region:
+    Type: String
+    Default: us-east-1
+  AWSEnv:
+    Type: String
+    Default: AWS
+
+Resources:
+
+  NotificationConfigurationApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: development
+      Name: NotificationConfiguration API
+      Description: API to expose Notification configuration endpoints
+
+  NotificationConfigurationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../src/notification-configuration-lambda/
+      Handler: entrypoint.handler.lambda_handler
+      Runtime: python3.11
+      Environment:
+        Variables:
+          REGION: !Ref Region
+          AWSENV: !Ref AWSEnv
+      Events:
+        PostNotificationConfiguration:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NotificationConfigurationApi
+            Path: /notification/configuration
+            Method: post
+        GetNotificationConfiguration:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NotificationConfigurationApi
+            Path: /notification/configuration
+            Method: get
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway endpoint URL for Alert Services"
+    Value: !Sub "https://${NotificationConfigurationApi}.execute-api.${AWS::Region}.amazonaws.com/development/notification/configuration"
