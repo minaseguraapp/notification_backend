@@ -46,4 +46,5 @@ class Router:
 
 
 def lambda_handler(event: Dict[str, Any], context: Any) -> Any:
+    logger.info("Notification configuration Lambda started with [%s]", event)
     return Router.route(event=event)

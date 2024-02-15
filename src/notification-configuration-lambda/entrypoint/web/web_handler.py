@@ -1,11 +1,15 @@
 import abc
 import json
+import logging
 from typing import Any, Dict, List, Optional
 
 import context
 from domain.model import aggregate
 from domain.service import notification_config_service
 from entrypoint import commons
+
+logging.getLogger().setLevel(logging.INFO)
+logger = logging.getLogger()
 
 
 class WebHandler(abc.ABC):
@@ -27,6 +31,7 @@ class GetNotificationConfiguration(WebHandler):
         super().__init__()
 
     def handle(self, event: Dict[str, Any]) -> Dict[str, Any]:
+        logger.info("GET Notification configuration handler started")
 
         query_params: Dict[str, str] = event.get("queryStringParameters") or {}
         mine_id: Optional[str] = query_params.get("mine")
@@ -54,6 +59,8 @@ class GetNotificationConfiguration(WebHandler):
 
 class PostNotificationConfiguration(WebHandler):
     def handle(self, event: Dict[str, Any]) -> Dict[str, Any]:
+        logger.info("POST Notification configuration handler started")
+
         return {
             "statusCode": 200,
             "body": json.dumps(
