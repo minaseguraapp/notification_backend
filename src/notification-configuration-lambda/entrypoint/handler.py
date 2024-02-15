@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, Dict, Optional, Type
+from typing import Any, Dict, Optional, Type
 
 import pydantic
 from entrypoint.web import web_handler as handler

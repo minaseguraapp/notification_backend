@@ -1,6 +1,11 @@
 import abc
 import json
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
+
+import context
+from domain.model import aggregate
+from domain.service import notification_config_service
+from entrypoint import commons
 
 
 class WebHandler(abc.ABC):
@@ -10,14 +15,40 @@ class WebHandler(abc.ABC):
 
 
 class GetNotificationConfiguration(WebHandler):
+
+    config_service: notification_config_service.NotificationConfigurationService
+
+    def __init__(
+        self,
+    ) -> None:
+        self.config_service = (
+            context.ContextManager.get_notification_configuration_service()
+        )
+        super().__init__()
+
     def handle(self, event: Dict[str, Any]) -> Dict[str, Any]:
+
+        query_params: Dict[str, str] = event.get("queryStringParameters") or {}
+        mine_id: Optional[str] = query_params.get("mine")
+
+        if not mine_id:
+            return {
+                "statusCode": 400,
+            }
+
+        notification_configurations: List[aggregate.NotificationConfiguration] = (
+            self.config_service.get_notification_configuration(mine_id=mine_id)
+        )
+
+        response: commons.GetNotificationConfigurationResponse = (
+            commons.GetNotificationConfigurationResponse(
+                configurations=notification_configurations
+            )
+        )
+
         return {
             "statusCode": 200,
-            "body": json.dumps(
-                {
-                    "message": "GET Notification config",
-                }
-            ),
+            "body": response.model_dump_json(by_alias=True),
         }
 
 

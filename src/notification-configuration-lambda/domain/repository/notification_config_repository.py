@@ -2,10 +2,9 @@ import abc
 from typing import List
 
 from domain.model import aggregate
-from domain.repository import notification_config_repository
 
 
-class NotificationConfigurationService(abc.ABC):
+class NotificationConfigurationRepository(abc.ABC):
 
     @abc.abstractmethod
     def get_notification_configuration(
@@ -18,19 +17,9 @@ class NotificationConfigurationService(abc.ABC):
     ) -> bool: ...
 
 
-class NotificationConfigurationServiceImpl(NotificationConfigurationService):
+class NotificationConfigurationDynamoDBRepository(NotificationConfigurationRepository):
 
-    notification_configuration_repository: (
-        notification_config_repository.NotificationConfigurationRepository
-    )
-
-    def __init__(
-        self,
-        notification_configuration_repository: notification_config_repository.NotificationConfigurationRepository,
-    ) -> None:
-        self.notification_configuration_repository = (
-            notification_configuration_repository
-        )
+    def __init__(self) -> None:
         super().__init__()
 
     def get_notification_configuration(

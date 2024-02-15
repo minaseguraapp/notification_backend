@@ -48,6 +48,22 @@ Resources:
             RestApiId: !Ref NotificationConfigurationApi
             Path: /notification/configuration
             Method: get
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NotificationConfigurationTable
+
+  NotificationConfigurationTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: NotificationConfigurationTable
+      AttributeDefinitions:
+        - AttributeName: mineId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: mineId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
 Outputs:
   ApiEndpoint:
     Description: "API Gateway endpoint URL for Alert Services"
