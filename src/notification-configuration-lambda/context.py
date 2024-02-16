@@ -33,8 +33,8 @@ class ContextManager:
         cls,
     ) -> notification_config_repository.NotificationConfigurationRepository:
         if not cls.notification_repository:
-            cls.notification_repository = (
-                notification_config_repository.NotificationConfigurationDynamoDBRepository()
+            cls.notification_repository = notification_config_repository.NotificationConfigurationDynamoDBRepository(
+                db_adapter=cls.get_database_adapter()
             )
         return cls.notification_repository
 
